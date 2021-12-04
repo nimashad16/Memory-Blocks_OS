@@ -40,32 +40,13 @@ typedef struct
     int next;
 } Memory;
 
-
-void fillBlocks(Memory *mem);
-
-void storeInBlocks(Memory *mem);
-
-/* returns the corresponding int for the given algorithm string */
-int stringToNum(char *algoName)
+Process createBlock(int data, int index)
 {
-    if(strcmp(algoName, "BESTFIT") == 0)
-    {
-        return 0;
-    }
-    else if(strcmp(algoName, "FIRSTFIT") == 0)
-    {
-        return 1;
-    }
-    else if(strcmp(algoName, "NEXTFIT") == 0)
-    {
-        return 2;
-    }
-    else if(strcmp(algoName, "WORSTFIT") == 0)
-    {
-        return 3;
-    }
-
-    return -1;
+    Process hole;
+    memcpy(hole.taskName, "HOLE", sizeof(hole.taskName));
+    hole.allocatedMemory = data;
+    hole.index = index;
+    return hole;
 }
 
 int getTaskCount(char *fileName)
@@ -92,7 +73,32 @@ int getTaskCount(char *fileName)
     fclose(filePointer);
     return counter;
 }
-void parseCommands(char *file, Task *taskArr)
+
+int stringToNum(char *task)
+{
+    if(strcmp(task, "BESTFIT") == 0)
+    {
+        return 0;
+    }
+    else if(strcmp(task, "FIRSTFIT") == 0)
+    {
+        return 1;
+    }
+    else if(strcmp(task, "NEXTFIT") == 0)
+    {
+        return 2;
+    }
+    else if(strcmp(task, "WORSTFIT") == 0)
+    {
+        return 3;
+    }
+
+    return -1;
+}
+
+void storeInBlocks(Memory *mem);
+
+void parsing(char *file, Task *taskArr)
 {
     char task[10];
     int counter = 0;
@@ -149,22 +155,12 @@ void parseCommands(char *file, Task *taskArr)
             fscanf(input, "%s ", task);
             for(x = 0; x < 10; x++)
                 taskArr[counter].taskName[x] = task[x];
-                taskArr[counter].memoryNeeded = 0;
-                counter++;
+            taskArr[counter].memoryNeeded = 0;
+            counter++;
 
         }
     }
     fclose(input);
-}
-
-/* returns a new hole with given parameters */
-Process createBlock(int data, int index)
-{
-    Process hole;
-    memcpy(hole.taskName, "HOLE", sizeof(hole.taskName));
-    hole.allocatedMemory = data;
-    hole.index = index;
-    return hole;
 }
 
 void decreaseArraySize(Memory *mem, int avoid)
@@ -232,6 +228,13 @@ void storingTheBlocks(char newTask[], int requiredMem, Memory *mem, int idx)
     mem->next++;
     mem->unusedSpace = mem->unusedSpace - requiredMem;
 }
+void newMem(Memory *mem)
+{
+    mem->processes[0] = createBlock(mem->spaceCombined, 0);
+    mem->next = 1;
+    mem->unusedSpace = mem->spaceCombined;
+    mem->nextAddress = 0;
+}
 
 void bestfit(char taskID[], int requiredMem, Memory *mem)
 {
@@ -284,7 +287,7 @@ void firstfit(char taskID[], int requiredMem, Memory *mem)
 
 void worstfit(char taskID[], int requiredMem, Memory *mem)
 {
- 
+
 }
 
 void request(char taskID[], int requiredMem, Memory *mem)
@@ -350,7 +353,6 @@ void listAvailable(Memory *mem)
     }
 }
 
-/* list all processes currently in mem */
 void listAssigned(Memory *mem)
 {
     int counter,x;
@@ -418,14 +420,6 @@ void run(Task task, Memory *mem)
     storeInBlocks(mem);
 }
 
-/* creates a hole process at the start of memory */
-void initMemory(Memory *mem)
-{
-    mem->processes[0] = createBlock(mem->spaceCombined, 0);
-    mem->next = 1;
-    mem->unusedSpace = mem->spaceCombined;
-    mem->nextAddress = 0;
-}
 
 int main(int argc, char **argv)
 {
@@ -437,18 +431,19 @@ int main(int argc, char **argv)
     Memory mem;
     mem.task = stringToNum(argv[1]);
     mem.spaceCombined = (int)strtol(argv[2], (char **)NULL, 10);
-    initMemory(&mem);
+    newMem(&mem);
 
     char *fileName = argv[3];
 
-    int numOfCommands = getTaskCount(fileName);
+    int numTasks;
+    numTasks = getTaskCount(fileName);
 
-    Task commandArray[numOfCommands];
-    parseCommands(fileName, commandArray);
+    Task taskArray[numTasks];
+    parsing(fileName, taskArray);
     int x;
-    for(x = 0; x < numOfCommands; x++)
+    for(x = 0; x < numTasks; x++)
     {
-        run(commandArray[x], &mem);
+        run(taskArray[x], &mem);
     }
     return 0;
 }
