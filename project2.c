@@ -112,8 +112,8 @@ void parsing(char *file, Task *taskArr)
         {
             taskArr[counter].task = REQUEST;
             fscanf(input, "%s ", task);
-            for(int i = 0; i < 10; i++)
-                taskArr[counter].taskName[i] = task[i];
+            for(int a = 0; a < 10; a++)
+                taskArr[counter].taskName[a] = task[a];
             fscanf(input, "%s ", task);
             taskArr[counter].memoryNeeded = (int)strtol(task, (char **)NULL, 10);
             counter++;
