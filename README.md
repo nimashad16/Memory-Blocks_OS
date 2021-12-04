@@ -4,7 +4,7 @@ int stringToNum(char *task) : This task will use if conditions to determine what
 
 int getTaskCount(char *fileName) : This will find the total number of tasks in the array list
 
-void parseCommands(char *file, Task *taskArr) : Will format the inputs read in from the file and will assign their positions to the array
+void parsing(char *file, Task *taskArr) : Will format the inputs read in from the file and will assign their positions to the array
 
 Process createBlock(int data, int index) : Creates the blocks in our array so that we can go through them and store sizes
 
