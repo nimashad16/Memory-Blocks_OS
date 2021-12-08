@@ -10,7 +10,6 @@
 #define LIST_ASSIGNED 3
 #define FIND 4
 
-/* algorithms */
 #define BESTFIT 0
 #define FIRSTFIT 1
 #define NEXTFIT 2
@@ -57,8 +56,7 @@ int getTaskCount(char *fileName)
     FILE *filePointer;
     filePointer = fopen(fileName, "r");
 
-
-    while(fscanf(filePointer, "%s ", task) != EOF)
+   while(fscanf(filePointer, "%s ", task) != EOF)
     {
         if(strcmp(task, "REQUEST") == 0){
             counter++;
@@ -73,7 +71,6 @@ int getTaskCount(char *fileName)
     fclose(filePointer);
     return counter;
 }
-
 int stringToNum(char *task)
 {
     if(strcmp(task, "BESTFIT") == 0)
@@ -112,8 +109,8 @@ void parsing(char *file, Task *taskArr)
         {
             taskArr[counter].task = REQUEST;
             fscanf(input, "%s ", task);
-            for(int a = 0; a < 10; a++)
-                taskArr[counter].taskName[a] = task[a];
+            for(int i = 0; i < 10; i++)
+                taskArr[counter].taskName[i] = task[i];
             fscanf(input, "%s ", task);
             taskArr[counter].memoryNeeded = (int)strtol(task, (char **)NULL, 10);
             counter++;
@@ -430,17 +427,17 @@ int main(int argc, char **argv)
 
     Memory mem;
     mem.task = stringToNum(argv[1]);
-   // mem.spaceCombined = (int)strtol(argv[2], (char **)NULL, 10);
+    mem.spaceCombined = (int)strtol(argv[2], (char **)NULL, 10);
     newMem(&mem);
 
     char *fileName = argv[3];
-
     int numTasks;
-    numTasks = getTaskCount(fileName);
+    getTaskCount(fileName);
 
     Task taskArray[numTasks];
     parsing(fileName, taskArray);
     int x;
+
     for(x = 0; x < numTasks; x++)
     {
         run(taskArray[x], &mem);
