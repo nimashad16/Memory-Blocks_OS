@@ -425,12 +425,12 @@ int main(int argc, char **argv)
 {
     if (argc != 4)
     {
-        printf("Not enough arguments.\n./project2 <algorithm> <total memory> <script>\n");
+        printf("Arguments not inputted correctly\n");
     }
 
     Memory mem;
     mem.task = stringToNum(argv[1]);
-    mem.spaceCombined = (int)strtol(argv[2], (char **)NULL, 10);
+   // mem.spaceCombined = (int)strtol(argv[2], (char **)NULL, 10);
     newMem(&mem);
 
     char *fileName = argv[3];
